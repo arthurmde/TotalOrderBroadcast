@@ -129,7 +129,7 @@ bool Socket::connect(const std::string host, const int port)
   if(errno == EAFNOSUPPORT)
     return false;
 
-  status = ::connect(m_sock,(sockaddr *) &m_addr, sizeof(m_addr);
+  status = ::connect(m_sock,(sockaddr *) &m_addr, sizeof(m_addr));
 
   if(status == 0)
     return true;
