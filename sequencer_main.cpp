@@ -1,13 +1,13 @@
 #include "ServerSocket.h"
-#include "ClientSocket.h"
 #include "SocketException.h"
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <thread>
+#include "Messenger.h"
 
 using namespace std;
 
+/*
 void send_sequenced_package(string ip, string message)
 {
   try
@@ -36,6 +36,7 @@ void send_sequenced_package(string ip, string message)
   }
   
 }
+*/
 
 string int_to_string(int number)
 {
@@ -69,7 +70,7 @@ int main(int argc, char* argv[])
           new_sock >> data;
           cout << "Recebido: " << data << endl;
           data = "GS " + int_to_string(sequence) + data;
-          
+         /* 
           string ip1 = "localhost";
           thread broadcast1(send_sequenced_package, ip1, data);
           string ip2 = "localhost";
@@ -80,6 +81,18 @@ int main(int argc, char* argv[])
           broadcast1.join();
           broadcast2.join();
           broadcast3.join();
+		  */
+
+          string ip1 = "localhost";
+          string ip2 = "localhost";
+          string ip3 = "localhost";
+
+		  Messenger courier();
+		  courier.addDestination(ip1,30000);
+		  courier.addDestination(ip2,30000);
+		  courier.addDestination(ip3,30000);
+		  courier.sendForAll();
+
           /*new_sock << data;*/
         }
       }
