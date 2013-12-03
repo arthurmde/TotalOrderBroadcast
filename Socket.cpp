@@ -23,7 +23,7 @@ bool Socket::create()
 {
   m_sock = socket(AF_INET, SOCK_STREAM, 0);
 
-  if (!is_valid())
+  if(!is_valid())
     return false;
 
   // TIME_WAIT - argh
@@ -101,7 +101,7 @@ int Socket::recv(std::string& s) const
 
   if(status == -1)
   {
-    std::cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
+    //std::cout << "status == -1   errno == " << errno << "  in Socket::recv\n";
   
     return 0;
   }

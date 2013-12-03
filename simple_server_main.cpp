@@ -9,35 +9,33 @@ int main ( int argc, char* argv[] )
 {
   std::cout << "running....\n";
 
-  try
-    {
-      // Create the socket
-      ServerSocket server ( 30000 );
-
-      while ( true )
+	try
 	{
+	  	// Create the socket
+		ServerSocket server(30000);
 
-	  ServerSocket new_sock;
-	  server.accept ( new_sock );
-
-	  try
-	    {
-	      while ( true )
+	  	while(true)
 		{
-		  std::string data;
-		  new_sock >> data;
-		  cout << "Recebido: " << data << endl;
-		  new_sock << data;
+			ServerSocket new_sock;
+			server.accept(new_sock);
+
+			try
+			{
+				while(true)
+				{
+					std::string data;
+					new_sock >> data;
+					cout << "Recebido: " << data << endl;
+			  		new_sock << data;
+				}
+		    }
+		  	catch ( SocketException& ) {}
 		}
-	    }
-	  catch ( SocketException& ) {}
-
 	}
-    }
-  catch ( SocketException& e )
+  	catch ( SocketException& e )
     {
-      std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+    	std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
     }
 
-  return 0;
+	return 0;
 }

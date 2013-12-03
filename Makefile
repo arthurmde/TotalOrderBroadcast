@@ -2,25 +2,33 @@
 #
 STD_FLAGS = -W -Wall -ansi -pedantic
 
+HEARDERS = $(wildcard *.cpp)
+
 simple_server_objects = ServerSocket.o Socket.o simple_server_main.o
 simple_client_objects = ClientSocket.o Socket.o simple_client_main.o
+sender_objects = ClientSocket.o Socket.o sender_main.o
+sequencer_objects = ServerSocket.o Socket.o 
 
-all : simple_server simple_client
+all : simple_server simple_client sender sequencer
 
 simple_server: $(simple_server_objects)
 	g++ -o simple_server $(simple_server_objects)
 
-
 simple_client: $(simple_client_objects)
 	g++ -o simple_client $(simple_client_objects)
 
+sender: $(sender_objects)
+	g++ -o sender $(sender_objects)
+
+sequencer: $(sequencer_objects)
+	g++  -pthread -std=gnu++0x -o sequencer $(sequencer_objects) sequencer_main.cpp
 
 Socket: Socket.cpp
 ServerSocket: ServerSocket.cpp
 ClientSocket: ClientSocket.cpp
 simple_server_main: simple_server_main.cpp
 simple_client_main: simple_client_main.cpp
-
+sender_main: sender_main.cpp
 
 clean:
-	rm -f *.o simple_server simple_client
+	rm -f *.o simple_server simple_client sender sequencer
