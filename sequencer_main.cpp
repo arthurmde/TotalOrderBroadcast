@@ -37,7 +37,7 @@ int read_port_from_config_file()
 vector<Address> read_ip_list_from_config_file()
 {
 	FILE *config_file;
-	config_file = fopen("sender.config","r");
+	config_file = fopen("sequencer.config","r");
 	vector<Address>ips;
 	
 	if(config_file== NULL)
@@ -46,18 +46,26 @@ vector<Address> read_ip_list_from_config_file()
 	}
 	else
 	{
-		char char_ip[16];
-		int port;
+		char temp;
+		int port,qtd;
 
 		fscanf(config_file,"server_port = %d",&port);
-		while(fscanf(config_file,"destination_ip = %s",char_ip)!=EOF || fscanf(config_file,"destination_port = %d",&port)!=EOF)
+		fscanf(config_file,"%d",&qtd);
+		fscanf(config_file,"%c",&temp);
+		
+		for(int i=0;i<qtd;i++)
 		{
+			char char_ip[16];
+			fscanf(config_file,"%s",char_ip);
+			fscanf(config_file,"%d",&port);
+			fscanf(config_file,"%c",&temp);
 			string ip(char_ip);
 			Address address;
 			address.ip = ip;
 			address.port = port;
 			ips.push_back(address);
 		}
+
 		fclose(config_file);
 	}
 
@@ -96,13 +104,16 @@ int main(int argc, char* argv[])
           cout << "Recebido: " << data << endl;
           data = "GS " + int_to_string(sequence) + " " + data;
 
-		  Messenger courier = Messenger();
-		  vector<Address> addresses = read_ip_list_from_config_file();
-		  for(int i=0;i<addresses.size();i++)
-		  {
-			  cout << "Adicionando o destino: " << addresses[i].ip << " com porta " << addresses[i].port << endl;
-			  courier.addDestination(addresses[i].ip,addresses[i].port);
-		  }
+	  Messenger courier = Messenger();
+	  vector<Address> addresses = read_ip_list_from_config_file();
+
+	  for(int i=0;i<addresses.size();i++)
+	  {
+		  courier.addDestination(addresses[i].ip,addresses[i].port);
+	  }
+
+	  courier.sendForAll(data);
+
           /*new_sock << data;*/
         }
       }
