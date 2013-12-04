@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define HOST 1
+int ID=0;
 
 string int_to_string(int number)
 {
@@ -35,9 +35,8 @@ Address read_config_file()
 	else
 	{
 		char char_ip[16];
-		int port,id;
-		
-		fscanf(config_file,"sender_ip = %s\nsender_port = %d\ndestination_id = %d",char_ip,&port,&id);
+		int port;
+		fscanf(config_file,"id = %d\nsequencer_ip = %s\nsequencer_port = %d",&ID, char_ip,&port);
 		fclose(config_file);
 
 		string ip(char_ip);
@@ -76,7 +75,7 @@ int main ( int argc, char* argv[] )
       {
         cout << "Sending message to " << address.ip << " at port " << address.port << " | Message N." << package << endl;
          
-        message = int_to_string(HOST) + " " + int_to_string(package);
+        message = int_to_string(ID) + " " + int_to_string(package);
 
         client_socket << message;
 
