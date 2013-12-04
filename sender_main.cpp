@@ -4,38 +4,79 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <cstdio>
+#include "Address.h"
 
 using namespace std;
 
 #define HOST 1
 
-string string_to_int(int number)
+string int_to_string(int number)
 {
    stringstream ss;//create a stringstream
    ss << number;//add number to the stream
    return ss.str();//return a string with the contents of the stream
 }
 
+Address read_config_file()
+{
+	FILE *config_file;
+	Address address;
+	address.ip="";
+	address.port=-1;
+
+	config_file = fopen("sender.config","r");
+	
+	if(config_file== NULL)
+	{
+		printf("Error reading configuration file.\n");
+	}
+	
+	else
+	{
+		char char_ip[16];
+		int port,id;
+		
+		fscanf(config_file,"sender_ip = %s\nsender_port = %d\ndestination_id = %d",char_ip,&port,&id);
+		fclose(config_file);
+
+		string ip(char_ip);
+		address.ip = ip;
+		address.port = port;
+	}
+
+	return address;
+}
+
+
+
 int main ( int argc, char* argv[] )
 {
   int package = 1;
   string message;
-  string sequencer_ip = "localhost";
+
+  Address address = read_config_file();
+  if(address.port<0)
+  {
+		printf("Error reading configuration file.\n");
+		return 1;
+  }
 
   srand(time(NULL));
 
   try
   {
+	cout << "Connecting to " << address.ip << " at port " << address.port << endl;
     while(true)
     {
       //colocar IP do sequencer
-      ClientSocket client_socket(sequencer_ip, 30000);
+      ClientSocket client_socket(address.ip, address.port);
 
       try
       {
-        cout << "Sending message to " << sequencer_ip << " | Message N." << package << endl;
+        cout << "Sending message to " << address.ip << " at port " << address.port << " | Message N." << package << endl;
          
-        message = string_to_int(HOST) + " " + string_to_int(package);
+        message = int_to_string(HOST) + " " + int_to_string(package);
 
         client_socket << message;
 
