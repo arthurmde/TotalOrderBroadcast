@@ -7,37 +7,6 @@
 
 using namespace std;
 
-/*
-void send_sequenced_package(string ip, string message)
-{
-  try
-  {
-    while(true)
-    {
-      //colocar IP do sequencer
-      ClientSocket client_socket(ip, 30000);
-
-      try
-      {
-        cout << "Sending message to " << ip << " | Message " << message << endl;
-
-        //sleep((rand() % 3) + 1);
-        client_socket << message;
-      }
-      catch (SocketException& e)
-      {
-        cout << "Intern SocketException:" << e.description() << "\n";
-      }
-    }
-  }
-  catch (SocketException& e)
-  {
-    cout << "Extertn SocketException was caught:" << e.description() << "\n";
-  }
-  
-}
-*/
-
 string int_to_string(int number)
 {
    stringstream ss;//create a stringstream
@@ -69,28 +38,16 @@ int main(int argc, char* argv[])
           string data;
           new_sock >> data;
           cout << "Recebido: " << data << endl;
-          data = "GS " + int_to_string(sequence) + data;
-         /* 
-          string ip1 = "localhost";
-          thread broadcast1(send_sequenced_package, ip1, data);
-          string ip2 = "localhost";
-          thread broadcast2(send_sequenced_package, ip2, data);
-          string ip3 = "localhost";
-          thread broadcast3(send_sequenced_package, ip3, data);
+          data = "GS " + int_to_string(sequence) + " " + data;
 
-          broadcast1.join();
-          broadcast2.join();
-          broadcast3.join();
-		  */
-
-          string ip1 = "localhost";
+          string ip1 = "10.1.20.21";
           string ip2 = "localhost";
           string ip3 = "localhost";
 
     		  Messenger courier = Messenger();
     		  courier.addDestination(ip1,30000);
-    		  courier.addDestination(ip2,30000);
-    		  courier.addDestination(ip3,30000);
+    		  //courier.addDestination(ip2,30000);
+    		  //courier.addDestination(ip3,30000);
     		  courier.sendForAll(data);
 
           /*new_sock << data;*/

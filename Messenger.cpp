@@ -31,22 +31,19 @@ void sendSequencedPackage(string ip, int port, string message)
 {
   try
   {
-    while(true)
+    //colocar IP do sequencer
+    ClientSocket client_socket(ip, port);
+
+    try
     {
-      //colocar IP do sequencer
-      ClientSocket client_socket(ip, port);
+      cout << "Sending message to " << ip << " | Message " << message << " " << endl;
 
-      try
-      {
-        cout << "Sending message to " << ip << " | Message " << message << endl;
-
-        //sleep((rand() % 3) + 1);
-        client_socket << message;
-      }
-      catch (SocketException& e)
-      {
-        cout << "Intern SocketException:" << e.description() << "\n";
-      }
+      //sleep((rand() % 3) + 1);
+      client_socket << message;
+    }
+    catch (SocketException& e)
+    {
+      cout << "Intern SocketException:" << e.description() << "\n";
     }
   }
   catch (SocketException& e)
