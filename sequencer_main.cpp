@@ -87,11 +87,11 @@ int main(int argc, char* argv[])
           string ip2 = "localhost";
           string ip3 = "localhost";
 
-		  Messenger courier();
-		  courier.addDestination(ip1,30000);
-		  courier.addDestination(ip2,30000);
-		  courier.addDestination(ip3,30000);
-		  courier.sendForAll();
+    		  Messenger courier = Messenger();
+    		  courier.addDestination(ip1,30000);
+    		  courier.addDestination(ip2,30000);
+    		  courier.addDestination(ip3,30000);
+    		  courier.sendForAll(data);
 
           /*new_sock << data;*/
         }

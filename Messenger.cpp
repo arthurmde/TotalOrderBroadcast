@@ -4,6 +4,7 @@
 #include <string>
 #include "ClientSocket.h"
 #include "SocketException.h"
+#include <vector>
 
 using namespace std;
 
@@ -15,8 +16,7 @@ Messenger::~Messenger()
 {
 }
 
-bool 
-Messenger::addDestination(string ip, int port)
+bool Messenger::addDestination(string ip, int port)
 {
 	Destination x;
 	x.ip = ip;
@@ -24,21 +24,6 @@ Messenger::addDestination(string ip, int port)
 
 	destinations.push_back(x);
 	return true;
-}
-
-
-bool
-Messenger::sendForAll(string data)
-{
-	vector<thread>threads;
-	for(vector<Destination>::iterator it = destinations.begin() ; it!=destinations.end();it++)
-	{
-          thread broadcast1(this.sendSequencedPackage, it->ip,it->port, data);
-		  threads.push_back(broadcast1);
-	}
-	
-	for(vector<threads>::iterator it=threads.begin() ; it!=threads.end() ; it++)
-		it->join();
 }
 
 
@@ -70,3 +55,22 @@ void sendSequencedPackage(string ip, int port, string message)
   }
   
 }
+
+
+bool Messenger::sendForAll(string data)
+{
+	thread threads[destinations.size()];
+
+	for(int j = 0, i = 0; j < (int)destinations.size(); j++, i++)
+	{
+      threads[i] = thread(sendSequencedPackage, destinations[j].ip, destinations[j].port, data);
+	}
+	
+	for(int i = 0; i < (int)destinations.size(); i++)
+  {
+    threads[i].join();
+  }
+}
+
+
+

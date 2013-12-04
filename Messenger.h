@@ -3,7 +3,8 @@
 
 using namespace std;
 
-typedef struct _Destination{
+typedef struct _Destination
+{
 	string ip;
 	int port;
 }Destination;

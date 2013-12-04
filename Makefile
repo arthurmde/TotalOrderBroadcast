@@ -9,6 +9,7 @@ simple_client_objects = ClientSocket.o Socket.o simple_client_main.o
 sender_objects = ClientSocket.o Socket.o sender_main.o
 sequencer_objects = ServerSocket.o Socket.o ClientSocket.o
 destination_objects = ServerSocket.o Socket.o
+messenger_objects = Socket.o ClientSocket.o
 
 all : simple_server simple_client sender sequencer destination
 
@@ -22,10 +23,13 @@ sender: $(sender_objects)
 	g++ -o sender $(sender_objects)
 
 sequencer: $(sequencer_objects)
-	g++  -pthread -std=gnu++0x -o sequencer $(sequencer_objects) sequencer_main.cpp
+	g++  -pthread -std=gnu++0x -o sequencer $(sequencer_objects) sequencer_main.cpp Messenger.cpp
 
 destination: $(destination_objects)
 	g++ -o destination $(destination_objects) destination_main.cpp
+
+messenger: $(messenger_objects)
+	g++  -pthread -std=gnu++0x -c -o $(messenger_objects) Messenger.cpp
 
 Socket: Socket.cpp
 ServerSocket: ServerSocket.cpp
