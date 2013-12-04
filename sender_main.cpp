@@ -5,11 +5,13 @@
 #include <string>
 #include <cstdlib>
 #include <cstdio>
+#include <vector>
 #include "Address.h"
+#include "Messenger.h"
 
 using namespace std;
 
-int ID=0;
+int ID;
 
 string int_to_string(int number)
 {
@@ -18,81 +20,84 @@ string int_to_string(int number)
    return ss.str();//return a string with the contents of the stream
 }
 
-Address read_config_file()
+vector<Address> read_ip_list_from_config_file()
 {
 	FILE *config_file;
-	Address address;
-	address.ip="";
-	address.port=-1;
-
 	config_file = fopen("sender.config","r");
+	vector<Address>ips;
 	
 	if(config_file== NULL)
 	{
-		printf("Error reading configuration file.\n");
+		cout << "Error reading configuration file." << endl;;
 	}
-	
 	else
 	{
-		char char_ip[16];
-		int port;
-		fscanf(config_file,"id = %d\nsequencer_ip = %s\nsequencer_port = %d",&ID, char_ip,&port);
-		fclose(config_file);
+		char temp;
+		int port,qtd;
 
-		string ip(char_ip);
-		address.ip = ip;
-		address.port = port;
+		fscanf(config_file,"%d",&ID);
+		fscanf(config_file,"%d",&qtd);
+		fscanf(config_file,"%c",&temp);
+		
+		for(int i=0;i<qtd;i++)
+		{
+			char char_ip[16];
+			fscanf(config_file,"%s",char_ip);
+			fscanf(config_file,"%d",&port);
+			fscanf(config_file,"%c",&temp);
+			string ip(char_ip);
+			Address address;
+			address.ip = ip;
+			address.port = port;
+			ips.push_back(address);
+		}
+
+		fclose(config_file);
 	}
 
-	return address;
+	return ips;
 }
 
 
-
-int main ( int argc, char* argv[] )
+int main(int argc, char* argv[])
 {
   int package = 1;
   string message;
 
-  Address address = read_config_file();
-  if(address.port<0)
-  {
-		printf("Error reading configuration file.\n");
-		return 1;
-  }
-
-  srand(time(NULL));
+  cout << "Sequencer online" << endl;
 
   try
   {
-	cout << "Connecting to " << address.ip << " at port " << address.port << endl;
+    // Create the socket
+	  Messenger courier = Messenger();
+	  vector<Address> addresses = read_ip_list_from_config_file();
+
+	  for(int i=0;i<addresses.size();i++)
+	  {
+		  courier.addDestination(addresses[i].ip,addresses[i].port);
+	  }
+
     while(true)
     {
-      //colocar IP do sequencer
-      ClientSocket client_socket(address.ip, address.port);
-
-      try
-      {
-        cout << "Sending message to " << address.ip << " at port " << address.port << " | Message N." << package << endl;
-         
+	  
         message = int_to_string(ID) + " " + int_to_string(package);
 
-        client_socket << message;
+	    courier.sendForAll(message);
 
         sleep((rand() % 3) + 1);
 
         package++;
-      }
-      catch (SocketException& e)
-      {
-        cout << "Intern SocketException:" << e.description() << "\n";
-      }
+
+
+      // thread thread_receiver(receive_messages, ref(new_sock)); 
     }
   }
-  catch (SocketException& e)
+  catch(SocketException& e)
   {
-    cout << "Extertn SocketException was caught:" << e.description() << "\n";
+    cout << "Exception was caught:" << e.description() << "\nExiting.\n";
   }
 
   return 0;
 }
+
+

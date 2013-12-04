@@ -20,7 +20,7 @@ simple_client: $(simple_client_objects)
 	g++ -o simple_client $(simple_client_objects)
 
 sender: $(sender_objects)
-	g++ -o sender $(sender_objects)
+	g++  -pthread -std=gnu++0x -o sender $(sender_objects) Messenger.cpp
 
 sequencer: $(sequencer_objects)
 	g++  -pthread -std=gnu++0x -o sequencer $(sequencer_objects) sequencer_main.cpp Messenger.cpp
