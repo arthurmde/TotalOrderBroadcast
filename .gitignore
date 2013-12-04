@@ -11,3 +11,10 @@
 *.lai
 *.la
 *.a
+
+# Generated binary files
+destination
+sender
+sequencer
+simple_client
+simple_server
