@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 
 	    courier.sendForAll(message);
 
-        sleep((rand() % 3) + 1);
+        //sleep((rand() % 3) + 1);
 
         package++;
 

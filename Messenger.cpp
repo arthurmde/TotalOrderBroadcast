@@ -38,7 +38,6 @@ void sendSequencedPackage(string ip, int port, string message)
     {
       cout << "Sending message to " << ip << " | Message " << message << " " << endl;
 
-      //sleep((rand() % 3) + 1);
       client_socket << message;
     }
     catch (SocketException& e)
@@ -60,6 +59,7 @@ bool Messenger::sendForAll(string data)
 
 	for(int j = 0, i = 0; j < (int)destinations.size(); j++, i++)
 	{
+      sleep((rand() % 3) + 1);
       threads[i] = thread(sendSequencedPackage, destinations[j].ip, destinations[j].port, data);
 	}
 	
